@@ -43,6 +43,7 @@ jobs:
           cd sqlite && 
           export PATH="$workspace/mingw64:$workspace/mingw64/bin:$workspace/msys64/usr/bin:/usr/bin" &&
           g++ --version && 
+          autoreconf -i -f -v && 
           ./configure --prefix="$(pwd)/${{ env.installationPath }}" &&
           make && make install
             
