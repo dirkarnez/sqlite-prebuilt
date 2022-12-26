@@ -9,12 +9,12 @@ on:
 jobs:
   build:
     name: Create Release
-    runs-on: windows-2019
+    runs-on: windows-latest
     env:
       libraryName: sqlite
       installationPath: sqlite-installation
       tagName: version-3.39.4 # target tag
-      mingwTargetZip: sqlite-${{ github.ref_name }}-x86_64-posix-seh-rev0-8.1.0.zip
+      mingwTargetZip: sqlite-${{ github.ref_name }}-mingw64-x86_64-posix-seh-rev0-8.1.0.zip
     steps:
       - uses: actions/checkout@v3
       
@@ -39,24 +39,23 @@ jobs:
       - name: set PATH, check mingw version, cmake generate, build and install
         shell: msys2 {0}
         run: |
-            workspace=$(pwd) &&
-            cd sqlite && 
-            export PATH="$workspace/mingw64:$workspace/mingw64/bin:$workspace/msys64/usr/bin:/usr/bin" &&
-            g++ --version 
-            && ./configure --prefix="$(pwd)/${{ env.installationPath }}" &&
-            make  &&                 #  Run the makefile.
-            make sqlite3.c           #  Build the "amalgamation" source file
+          workspace=$(pwd) &&
+          cd sqlite && 
+          export PATH="$workspace/mingw64:$workspace/mingw64/bin:$workspace/msys64/usr/bin:/usr/bin" &&
+          g++ --version && 
+          ./configure --prefix="$(pwd)/${{ env.installationPath }}" &&
+          make && make install
             
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "${{ github.workspace }}/sqlite/${{ env.installationPath }}"
+          directory: "sqlite/${{ env.installationPath }}"
           filename: "${{ env.mingwTargetZip }}"
         
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "${{ github.workspace }}/sqlite/${{ env.installationPath }}/${{ env.mingwTargetZip }}"
+          artifacts: "sqlite/${{ env.installationPath }}/${{ env.mingwTargetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
