@@ -16,10 +16,17 @@ jobs:
       tagName: version-3.40.1
       mingwTargetZip: sqlite-${{ github.ref_name }}-mingw64-x86_64-posix-seh-rev0-8.1.0.zip
     steps:
-      - name: git clone
-        shell: cmd
-        run: git clone --recursive https://github.com/sqlite/sqlite.git && cd sqlite && git checkout ${{ env.tagName }}
+#       - name: git clone
+#         shell: cmd
+#         run: git clone --recursive https://github.com/sqlite/sqlite.git && cd sqlite && git checkout ${{ env.tagName }}
       
+      - shell: cmd
+        run: |
+          curl https://www.sqlite.org/2022/sqlite-autoconf-3400100.tar.gz -L --output sqlite-autoconf-3400100.tar.gz &&^
+          tar -xvf sqlite-autoconf-3400100.tar.gz &&^
+          cd sqlite-autoconf-3400100 &&^
+          dir
+          
       - name: Install MSYS2
         uses: msys2/setup-msys2@v2
         with:
@@ -38,6 +45,7 @@ jobs:
         shell: msys2 {0}
         run: |
           workspace=$(pwd) &&
+          mv "sqlite-autoconf-3400100" "sqlite" && 
           cd sqlite && 
           export PATH="$workspace/mingw64:$workspace/mingw64/bin:$workspace/msys64/usr/bin:/usr/bin" &&
           g++ --version && 
