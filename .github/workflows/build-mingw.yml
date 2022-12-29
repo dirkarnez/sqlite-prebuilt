@@ -13,7 +13,7 @@ jobs:
     env:
       libraryName: sqlite
       installationPath: sqlite-installation
-      tagName: version-3.39.4 # target tag
+      tagName: version-3.40.1
       mingwTargetZip: sqlite-${{ github.ref_name }}-mingw64-x86_64-posix-seh-rev0-8.1.0.zip
     steps:
       - name: git clone
